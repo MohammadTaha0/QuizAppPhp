@@ -1,6 +1,6 @@
 <?php
 $con = mysqli_connect('localhost','root','','quiz');
-$sql = $con->prepare('select * from mcq_question limit 4');
+$sql = $con->prepare('select * from mcq_question where lower(name) = "html" limit 4');
 $stmt = $sql->execute();
 $stmt = $sql->get_result();
 while($fetch = $stmt->fetch_array()){

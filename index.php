@@ -1,3 +1,20 @@
+<?php
+session_start();
+if (!isset($_SESSION['loginA'])) {
+    header("location: ./Login.php");
+    exit;
+}
+$cn = mysqli_connect('localhost', 'root', '', 'quiz');
+$user = $cn->prepare('select * from std where id=?');
+$user->bind_param('s', $_SESSION['loginA']);
+$user->execute();
+$res = $user->get_result();
+$name = '';
+if ($res->num_rows == 1) {
+    $fetch = $res->fetch_assoc();
+    $name = $fetch['name'];
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,30 +27,45 @@
 </head>
 
 <body>
-    <div class="row p-5">
-        <div class="col">
-            <h2>Quiz</h2>
-        </div>
-        <div class="container">
-            <div class="row row-cols-1 gy-3">
-                <div class="col">
-                    <h6 class="text-capitalize">Question</h6>
-                </div>
-                <div class="col">
-                    <input type="radio" class="form-check-radio" name="raddioB" id="o1">
-                    <label class="text-capitalize" for="o1">label1</label>
-                </div>
-                <div class="col">
-                    <input type="radio" class="form-check-radio" name="raddioB" id="o2">
-                    <label class="text-capitalize" for="o2">label1</label>
-                </div>
-                <div class="col">
-                    <input type="radio" class="form-check-radio" name="raddioB" id="o3">
-                    <label class="text-capitalize" for="o3">label1</label>
-                </div>
-                <div class="col">
-                    <button class="btn btn-primary btn-sm">Next</button>
-                </div>
+    <div class="container mt-5">
+        <div class="row row-cols-1 gy-3 border w-100">
+            <div class="p-0 col-12 my-0">
+                <h2 class="bg-dark w-100 py-3 text-center text-light h4">Quiz Application</h2>
+            </div>
+            <div class="col p-0 m-0">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <td><?php echo $name; ?></td>
+                            <th>No of Questions</th>
+                            <td></td>
+                            <th>Question #</th>
+                            <td></td>
+                            <th>Subject</th>
+                            <td>HTML</td>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="col">
+                <h6 class="text-capitalize">Question</h6>
+            </div>
+            <div class="col">
+                <input type="radio" class="form-check-radio" name="raddioB" id="o1">
+                <label class="text-capitalize" for="o1">label1</label>
+            </div>
+            <div class="col">
+                <input type="radio" class="form-check-radio" name="raddioB" id="o2">
+                <label class="text-capitalize" for="o2">label1</label>
+            </div>
+            <div class="col">
+                <input type="radio" class="form-check-radio" name="raddioB" id="o3">
+                <label class="text-capitalize" for="o3">label1</label>
+            </div>
+            <div class="col pb-2 text-end">
+                <button class="btn btn-primary btn-sm px-5">Next</button>
+                <button class="btn btn-dark btn-sm px-5 d-none" id="end">End</button>
             </div>
         </div>
     </div>
@@ -52,6 +84,8 @@
                 function(resp) {
                     if (resp.rows > 0) {
                         rows = resp.rows;
+                        $("td")[1].innerText = rows;
+                        $("td")[2].innerText = n + 1;
                         $("h6").text(resp.data[n]['ques']);
                         $("#o1").val(resp.data[n]['o1'])
                         $("#o2").val(resp.data[n]['o2'])
@@ -76,26 +110,40 @@
                         break;
                     }
                 }
-                if(selectedRadioButton.value == correct){
+                if (selectedRadioButton.value == correct) {
                     result += 1;
                 }
-            }
-            if ($(this).text() != "End") {
-                if (n < rows - 1) {
-                    n++;
-                    if ((n == rows - 1)) {
-                        $(this).text("End");
+                if ($(this).text() != "End") {
+                    if (n < rows - 1) {
+                        n++;
+                        if ((n == rows - 1)) {
+                            $(this).addClass('d-none');
+                            $("#end").removeClass('d-none');
+                        }
+                    }
+                } else {
+                    if (first) {
+                        $.post(
+                            "./submitResult.php", {
+                                res: result,
+                                subj: "html",
+                                tQues: rows
+                            },
+                            function(resMarks) {
+                                console.log(resMarks);
+                                if (resMarks.status == 200) {
+                                    location.href = './Result.php?id=<?php echo $_SESSION['loginA']; ?>';
+                                } else {
+                                    alert("Something Went Wrong!");
+                                }
+                            }
+                        );
+                        first = false;
                     }
                 }
-            } else {
-                if (first) {
-                    alert(result);
-                    first = false;
-                }
+                quiz(n);
             }
-            quiz(n);
         });
-
     });
 </script>
 

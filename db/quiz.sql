@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 25, 2023 at 09:34 PM
+-- Generation Time: Feb 27, 2023 at 11:38 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.0.25
 
@@ -61,6 +61,50 @@ INSERT INTO `mcq_question` (`id`, `name`, `ques`, `o1`, `o2`, `o3`, `ans`) VALUE
 (17, 'MVC', 'Choose the base class for string() method:', 'System.Array', 'System.char', 'System.String', 'System.String'),
 (18, 'MVC', 'MVC Stand for', 'Model view center', 'Model View Controller', 'Model date conroller', 'Model View Controller');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `std`
+--
+
+CREATE TABLE `std` (
+  `id` bigint(20) NOT NULL,
+  `name` varchar(111) NOT NULL,
+  `user` varchar(111) NOT NULL,
+  `pass` varchar(111) NOT NULL,
+  `date` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `std`
+--
+
+INSERT INTO `std` (`id`, `name`, `user`, `pass`, `date`) VALUES
+(1, 'Mohammad taha', 'Taha', 'Taha', '2023-02-26 01:59:08'),
+(2, 'Moiz Hussain', 'Moiz', 'moiz', '2023-02-26 01:59:08');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `stdres`
+--
+
+CREATE TABLE `stdres` (
+  `id` bigint(20) NOT NULL,
+  `stdId` bigint(20) NOT NULL,
+  `subj` varchar(122) NOT NULL,
+  `tQues` bigint(20) NOT NULL,
+  `res` bigint(20) NOT NULL,
+  `date` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `stdres`
+--
+
+INSERT INTO `stdres` (`id`, `stdId`, `subj`, `tQues`, `res`, `date`) VALUES
+(6, 1, 'html', 4, 2, '2023-02-27 15:37:12');
+
 --
 -- Indexes for dumped tables
 --
@@ -72,6 +116,18 @@ ALTER TABLE `mcq_question`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `std`
+--
+ALTER TABLE `std`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `stdres`
+--
+ALTER TABLE `stdres`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -80,6 +136,18 @@ ALTER TABLE `mcq_question`
 --
 ALTER TABLE `mcq_question`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+
+--
+-- AUTO_INCREMENT for table `std`
+--
+ALTER TABLE `std`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `stdres`
+--
+ALTER TABLE `stdres`
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
